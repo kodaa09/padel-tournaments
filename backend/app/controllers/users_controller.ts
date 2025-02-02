@@ -11,7 +11,8 @@ export default class UsersController {
   )
 
   async signup({ request, response }: HttpContext) {
-    const { firstname, lastname, email, password } = request.only([
+    const { licenseNumber, firstname, lastname, email, password } = request.only([
+      'licenseNumber',
       'firstname',
       'lastname',
       'email',
@@ -19,6 +20,7 @@ export default class UsersController {
     ])
 
     const user = await User.create({
+      licenseNumber,
       firstname,
       lastname,
       email,

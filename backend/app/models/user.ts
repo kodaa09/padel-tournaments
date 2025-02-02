@@ -11,7 +11,7 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 
 export default class User extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
-  declare license_number: number
+  declare licenseNumber: number
 
   @column()
   declare firstname: string
