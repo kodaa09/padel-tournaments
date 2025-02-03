@@ -7,8 +7,8 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('name').notNullable()
-      table.string('start_date').notNullable()
-      table.string('end_date').notNullable()
+      table.timestamp('start_date').notNullable()
+      table.timestamp('end_date').notNullable()
       table.string('location').notNullable()
       table.enu('status', ['upcoming', 'ongoing', 'completed']).defaultTo('upcoming')
       table
