@@ -28,6 +28,11 @@ export default class Team extends BaseModel {
   })
   declare matchesAsTeam2: HasMany<typeof Match>
 
+  @hasMany(() => Match, {
+    foreignKey: 'winnerId',
+  })
+  declare matchesAsWinner: HasMany<typeof Match>
+
   @manyToMany(() => User, {
     pivotTable: 'user_teams',
   })
