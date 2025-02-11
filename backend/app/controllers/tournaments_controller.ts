@@ -1,28 +1,95 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import Tournament from '#models/tournament'
 
 export default class TournamentsController {
   /**
-   * Display a list of resource
+   * Récupère la liste des tournois
    */
-  async index({}: HttpContext) {}
+  async index({ response }: HttpContext) {
+    const tournaments = await Tournament.query().preload('teams').preload('matchs')
+
+    return response.status(200).json({
+      status: 'success',
+      message: 'Liste des tournois récupérée avec succès',
+      data: tournaments,
+    })
+  }
 
   /**
-   * Handle form submission for the create action
+   * Crée un nouveau tournoi
    */
-  async store({ request }: HttpContext) {}
+  async store({ request, response }: HttpContext) {
+    const tournamentData = request.only([
+      'name',
+      'startDate',
+      'endDate',
+      'location',
+      'status',
+      'diffciulty',
+      'categorie',
+    ])
+
+    const tournament = await Tournament.create(tournamentData)
+
+    return response.status(201).json({
+      status: 'success',
+      message: 'Tournoi créé avec succès',
+      data: tournament,
+    })
+  }
 
   /**
-   * Show individual record
+   * Récupère un tournoi spécifique
    */
-  async show({ params }: HttpContext) {}
+  async show({ params, response }: HttpContext) {
+    const tournament = await Tournament.query()
+      .where('id', params.id)
+      .preload('teams')
+      .preload('matchs')
+      .firstOrFail()
+
+    return response.status(200).json({
+      status: 'success',
+      message: 'Tournoi récupéré avec succès',
+      data: tournament,
+    })
+  }
 
   /**
-   * Handle form submission for the edit action
+   * Met à jour un tournoi existant
    */
-  async update({ params, request }: HttpContext) {}
+  async update({ params, request, response }: HttpContext) {
+    const tournament = await Tournament.findOrFail(params.id)
+
+    const tournamentData = request.only([
+      'name',
+      'startDate',
+      'endDate',
+      'location',
+      'status',
+      'diffciulty',
+      'categorie',
+    ])
+
+    await tournament.merge(tournamentData).save()
+
+    await tournament.load('teams')
+    await tournament.load('matchs')
+
+    return response.status(200).json({
+      status: 'success',
+      message: 'Tournoi mis à jour avec succès',
+      data: tournament,
+    })
+  }
 
   /**
-   * Delete record
+   * Supprime un tournoi
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ params, response }: HttpContext) {
+    const tournament = await Tournament.findOrFail(params.id)
+    await tournament.delete()
+
+    return response.status(204)
+  }
 }
