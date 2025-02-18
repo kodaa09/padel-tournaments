@@ -8,6 +8,8 @@ export default class extends BaseSchema {
       table.uuid('id').primary()
       table.string('name').notNullable()
       table.uuid('tournament_id').unsigned().references('tournaments.id').onDelete('CASCADE')
+      table.uuid('player1_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.uuid('player2_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

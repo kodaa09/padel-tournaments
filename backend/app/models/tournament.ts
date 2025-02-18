@@ -1,5 +1,6 @@
+import { randomUUID } from 'node:crypto'
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeCreate, column, hasMany } from '@adonisjs/lucid/orm'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Team from './team.js'
 import Match from './match.js'
@@ -24,10 +25,10 @@ export default class Tournament extends BaseModel {
   declare status: string
 
   @column()
-  declare diffciulty: string
+  declare difficulty: string
 
   @column()
-  declare categorie: string
+  declare category: string
 
   @hasMany(() => Team)
   declare teams: HasMany<typeof Team>
@@ -40,4 +41,9 @@ export default class Tournament extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @beforeCreate()
+  static assignUuid(tournament: Tournament) {
+    tournament.id = randomUUID()
+  }
 }

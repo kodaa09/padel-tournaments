@@ -1,12 +1,13 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeCreate, belongsTo, column } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Team from './team.js'
 import Tournament from './tournament.js'
+import { randomUUID } from 'node:crypto'
 
 export default class Match extends BaseModel {
   @column({ isPrimary: true })
-  declare id: number
+  declare id: string
 
   @column()
   declare fieldNumber: number
@@ -58,4 +59,9 @@ export default class Match extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @beforeCreate()
+  static assignUuid(match: Match) {
+    match.id = randomUUID()
+  }
 }

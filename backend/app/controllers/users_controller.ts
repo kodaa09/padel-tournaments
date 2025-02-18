@@ -3,68 +3,166 @@ import vine from '@vinejs/vine'
 import User from '#models/user'
 
 export default class UsersController {
-  static validator = vine.compile(
+  /**
+   * Validateur pour l'inscription
+   */
+  static signupValidator = vine.compile(
+    vine.object({
+      licenseNumber: vine.string().trim(),
+      firstname: vine.string().trim(),
+      lastname: vine.string().trim(),
+      email: vine.string().email(),
+      password: vine.string().minLength(4),
+      role: vine.enum(['user', 'admin']).optional(),
+    })
+  )
+
+  /**
+   * Validateur pour la connexion
+   */
+  static loginValidator = vine.compile(
     vine.object({
       email: vine.string().email(),
       password: vine.string(),
     })
   )
 
-  async signup({ request, response }: HttpContext) {
-    const { licenseNumber, firstname, lastname, email, password } = request.only([
-      'licenseNumber',
-      'firstname',
-      'lastname',
-      'email',
-      'password',
-    ])
+  /**
+   * Récupère la liste des utilisateurs
+   */
+  async index({ response }: HttpContext) {
+    const users = await User.query()
 
-    const user = await User.create({
-      licenseNumber,
-      firstname,
-      lastname,
-      email,
-      password,
+    return response.status(200).json({
+      status: 'success',
+      message: 'Liste des utilisateurs récupérée avec succès',
+      data: users,
     })
+  }
 
-    if (!user) {
-      return response.status(404).json({ message: 'User already registered' })
+  /**
+   * Récupère un utilisateur spécifique
+   */
+  async show({ params, response }: HttpContext) {
+    const user = await User.query().where('id', params.id).firstOrFail()
+
+    return response.status(200).json({
+      status: 'success',
+      message: 'Utilisateur récupéré avec succès',
+      data: user,
+    })
+  }
+
+  /**
+   * Inscription d'un nouvel utilisateur
+   */
+  async signup({ request, response }: HttpContext) {
+    const payload = await request.validateUsing(UsersController.signupValidator)
+
+    // Vérifie si l'utilisateur existe déjà
+    const existingUser = await User.findBy('email', payload.email)
+    if (existingUser) {
+      return response.status(400).json({
+        status: 'error',
+        message: 'Un utilisateur avec cet email existe déjà',
+      })
     }
 
-    return response.status(200).send(user)
+    // Verifie si le numero de licence est unique
+    const existingLicenseNumber = await User.findBy('license_number', payload.licenseNumber)
+    if (existingLicenseNumber) {
+      return response.status(400).json({
+        status: 'error',
+        message: 'Ce numéro de licence est déjà utilisé',
+      })
+    }
+    const user = await User.create(payload)
+
+    return response.status(201).json({
+      status: 'success',
+      message: 'Inscription réussie',
+      data: user,
+    })
   }
 
+  /**
+   * Connexion d'un utilisateur
+   */
   async login({ auth, request, response }: HttpContext) {
-    const { email, password } = await request.validateUsing(UsersController.validator)
+    const { email, password } = await request.validateUsing(UsersController.loginValidator)
 
-    const user = await User.verifyCredentials(email, password)
-    await auth.use('web').login(user)
+    try {
+      const user = await User.verifyCredentials(email, password)
+      await auth.use('web').login(user)
 
-    return response.status(200).send(user)
+      return response.status(200).json({
+        status: 'success',
+        message: 'Connexion réussie',
+        data: user,
+      })
+    } catch {
+      return response.status(400).json({
+        status: 'error',
+        message: 'Email ou mot de passe incorrect',
+      })
+    }
   }
 
-  async check({ auth }: HttpContext) {
-    return await auth.use('web').check()
+  /**
+   * Vérifie si l'utilisateur est authentifié
+   */
+  async check({ auth, response }: HttpContext) {
+    const isAuthenticated = await auth.use('web').check()
+
+    return response.status(200).json({
+      status: 'success',
+      authenticated: isAuthenticated,
+    })
   }
 
+  /**
+   * Récupère les informations de l'utilisateur connecté
+   */
   async me({ auth, response }: HttpContext) {
     try {
       const isAuthenticated = await auth.use('web').check()
 
       if (isAuthenticated) {
         const user = auth.use('web').user
-        if (!user) return response.status(200).send({ error: 'Not authenticated' })
-        return response.status(200).send(user)
-      } else {
-        return response.status(401).send({ error: 'Not authenticated' })
+        if (!user) {
+          return response.status(401).json({
+            status: 'error',
+            message: 'Non authentifié',
+          })
+        }
+
+        return response.status(200).json({
+          status: 'success',
+          data: user,
+        })
       }
+
+      return response.status(401).json({
+        status: 'error',
+        message: 'Non authentifié',
+      })
     } catch (error) {
-      return response.status(500).send({ error: 'Internal server error' })
+      return response.status(500).json({
+        status: 'error',
+        message: 'Erreur serveur interne',
+      })
     }
   }
 
+  /**
+   * Déconnexion de l'utilisateur
+   */
   async logout({ auth, response }: HttpContext) {
     await auth.use('web').logout()
-    return response.status(200).send({ message: 'Logged out' })
+
+    return response.status(200).json({
+      status: 'success',
+      message: 'Déconnexion réussie',
+    })
   }
 }

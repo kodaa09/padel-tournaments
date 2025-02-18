@@ -35,6 +35,26 @@ export default class MatchesController {
       'date',
     ])
 
+    // Vérification que les équipes existent et sont différentes
+    if (matchData.team1Id === matchData.team2Id) {
+      return response.status(400).json({
+        status: 'error',
+        message: 'Les deux équipes doivent être différentes',
+      })
+    }
+
+    // Vérification que le gagnant est l'une des deux équipes
+    if (
+      matchData.winnerId &&
+      matchData.winnerId !== matchData.team1Id &&
+      matchData.winnerId !== matchData.team2Id
+    ) {
+      return response.status(400).json({
+        status: 'error',
+        message: "Le gagnant doit être l'une des deux équipes",
+      })
+    }
+
     const match = await Match.create(matchData)
 
     await match.load('team1')
@@ -85,6 +105,26 @@ export default class MatchesController {
       'winnerId',
       'date',
     ])
+
+    // Vérification que les équipes sont différentes
+    if (matchData.team1Id === matchData.team2Id) {
+      return response.status(400).json({
+        status: 'error',
+        message: 'Les deux équipes doivent être différentes',
+      })
+    }
+
+    // Vérification que le gagnant est l'une des deux équipes
+    if (
+      matchData.winnerId &&
+      matchData.winnerId !== matchData.team1Id &&
+      matchData.winnerId !== matchData.team2Id
+    ) {
+      return response.status(400).json({
+        status: 'error',
+        message: "Le gagnant doit être l'une des deux équipes",
+      })
+    }
 
     await match.merge(matchData).save()
 

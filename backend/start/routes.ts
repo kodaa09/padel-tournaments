@@ -5,14 +5,14 @@ const TournamentsController = () => import('#controllers/tournaments_controller'
 const TeamsController = () => import('#controllers/teams_controller')
 const MatchesController = () => import('#controllers/matches_controller')
 
-router.post('/auth/signup', [UsersController, 'signup'])
-router.post('/auth/login', [UsersController, 'login'])
-router.post('/auth/logout', [UsersController, 'logout']).use(middleware.auth())
-router.get('/auth/me', [UsersController, 'me']).use(middleware.auth())
-router.get('/auth/check', [UsersController, 'check']).use(middleware.auth())
-
 router
   .group(() => {
+    router.post('/auth/signup', [UsersController, 'signup'])
+    router.post('/auth/login', [UsersController, 'login'])
+    router.post('/auth/logout', [UsersController, 'logout']).use(middleware.auth())
+    router.get('/auth/me', [UsersController, 'me']).use(middleware.auth())
+    router.get('/auth/check', [UsersController, 'check']).use(middleware.auth())
+
     router.get('/tournaments', [TournamentsController, 'index'])
     router.post('/tournaments', [TournamentsController, 'store']).use(middleware.admin())
     router.get('/tournaments/:id', [TournamentsController, 'show'])
