@@ -12,19 +12,26 @@ const initialState = {
   password: undefined,
 };
 
+const toast = useToast();
 const isOpen = ref(false);
 const state = reactive(initialState);
 const errorMessage = ref("");
+const isLoading = ref(false);
 
 async function onSubmit(event: FormSubmitEvent<SignupSchema>) {
+  isLoading.value = true;
+
   const { status, error } = await useFetch(`${endpoint}/auth/signup`, {
     method: "POST",
     body: event.data,
     credentials: "include",
   });
 
+  isLoading.value = false;
+
   if (status.value === "success") {
     resetForm();
+    toast.add({ title: "Inscription réussie" });
   } else {
     errorMessage.value = error.value?.data.message;
   }
@@ -96,7 +103,9 @@ const resetForm = () => {
 
           <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
 
-          <UButton class="!mt-6" type="submit"> S'inscrire </UButton>
+          <UButton class="!mt-6" type="submit" :loading="isLoading">
+            S'inscrire
+          </UButton>
         </UForm>
       </UCard>
     </UModal>

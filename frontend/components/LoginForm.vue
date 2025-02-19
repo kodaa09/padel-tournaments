@@ -1,24 +1,29 @@
 <script setup lang="ts">
-import { z } from "zod";
 import type { FormSubmitEvent } from "#ui/types";
+import { loginSchema, type LoginSchema } from "~/schemas/auth.schema";
+import { useAuthStore } from "~/store/auth";
 
-const schema = z.object({
-  email: z.string().email("Email invalide"),
-  password: z
-    .string()
-    .min(8, "Le mot de passe doit contenir au moins 8 caractères"),
-});
-type Schema = z.output<typeof schema>;
-
+const toast = useToast();
+const authStore = useAuthStore();
 const isOpen = ref(false);
+const isLoading = ref(false);
+const errorMessage = ref("");
 const state = reactive({
   email: undefined,
   password: undefined,
 });
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  // Do something with data
-  console.log(event.data);
+async function onSubmit(event: FormSubmitEvent<LoginSchema>) {
+  isLoading.value = true;
+
+  const { status, error } = await authStore.authenticate(event.data);
+  if (status.value === "success") {
+    toast.add({ title: "Connexion réussie" });
+  } else {
+    errorMessage.value = error.value?.data.message;
+  }
+
+  isLoading.value = false;
 }
 </script>
 
@@ -51,20 +56,22 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </template>
 
         <UForm
-          :schema="schema"
+          :schema="loginSchema"
           :state="state"
           class="space-y-4"
           @submit="onSubmit"
         >
-          <UFormGroup label="Email" name="email">
+          <UFormGroup label="Email" name="email" required>
             <UInput v-model="state.email" />
           </UFormGroup>
 
-          <UFormGroup label="Password" name="password">
+          <UFormGroup label="Mot de passe" name="password" required>
             <UInput v-model="state.password" type="password" />
           </UFormGroup>
 
-          <UButton type="submit"> Submit </UButton>
+          <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
+
+          <UButton type="submit" :loading="isLoading"> Se connecter </UButton>
         </UForm>
       </UCard>
     </UModal>
