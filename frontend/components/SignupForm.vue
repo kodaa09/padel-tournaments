@@ -23,7 +23,10 @@ async function onSubmit(event: FormSubmitEvent<SignupSchema>) {
 
   const { status, error } = await useFetch(`${endpoint}/auth/signup`, {
     method: "POST",
-    body: event.data,
+    body: {
+      ...event.data,
+      licenseNumber: event.data.licenseNumber.toString(),
+    },
     credentials: "include",
   });
 
