@@ -30,6 +30,15 @@ export default class Tournament extends BaseModel {
   @column()
   declare category: string
 
+  @column()
+  declare price: number
+
+  @column()
+  declare maxTeams: number
+
+  @column()
+  declare teamRegistered: number
+
   @hasMany(() => Team)
   declare teams: HasMany<typeof Team>
 

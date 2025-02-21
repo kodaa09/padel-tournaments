@@ -185,6 +185,9 @@ export type Tournament = {
   id: string;
   name: string;
   location: string;
+  price: number;
+  maxTeams: number;
+  teamRegistered: number;
   startDate: string;
   endDate: string;
   status: string;

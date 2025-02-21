@@ -14,6 +14,8 @@ const isLoading = ref(false);
 const state = reactive({
   name: "",
   location: "",
+  price: 0,
+  maxTeams: 20,
   startDate: new Date(),
   endDate: new Date(),
   status: useTournament().statusOptions[0].value,
@@ -30,6 +32,7 @@ const onSubmit = async (event: FormSubmitEvent<CreateTournamentSchema>) => {
       title: "Tournoi créé avec succès",
       color: "green",
     });
+    resetForm();
   } catch (error) {
     toast.add({
       title: "Erreur lors de la création du tournoi",
@@ -38,6 +41,15 @@ const onSubmit = async (event: FormSubmitEvent<CreateTournamentSchema>) => {
   }
   isLoading.value = false;
   isOpen.value = false;
+};
+
+const resetForm = () => {
+  state.name = "";
+  state.location = "";
+  state.price = 0;
+  state.maxTeams = 20;
+  state.startDate = new Date();
+  state.endDate = new Date();
 };
 </script>
 
@@ -71,6 +83,14 @@ const onSubmit = async (event: FormSubmitEvent<CreateTournamentSchema>) => {
 
           <UFormGroup label="Localisation du tournoi" name="location" required>
             <UInput v-model="state.location" />
+          </UFormGroup>
+
+          <UFormGroup label="Prix" name="price" required>
+            <UInput v-model="state.price" type="number" />
+          </UFormGroup>
+
+          <UFormGroup label="Nombres d'équipes max" name="maxTeams" required>
+            <UInput v-model="state.maxTeams" type="number" />
           </UFormGroup>
 
           <div class="flex gap-4">

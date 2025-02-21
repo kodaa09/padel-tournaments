@@ -28,6 +28,7 @@ const loadTournaments = async () => {
     if (response) {
       tournaments.value = response.data;
     }
+    console.log(tournaments.value);
   } catch (error) {
     console.error(error);
   } finally {
@@ -74,6 +75,8 @@ definePageMeta({
             <div class="flex justify-between items-center">
               <div>
                 <p>Lieu : {{ tournament.location }}</p>
+                <p>Prix : {{ tournament.price }} €</p>
+                <p>Nombres d'équipes max : {{ tournament.maxTeams }}</p>
               </div>
               <div>
                 <p>

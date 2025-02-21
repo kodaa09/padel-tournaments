@@ -10,6 +10,9 @@ export default class extends BaseSchema {
       table.timestamp('start_date').notNullable()
       table.timestamp('end_date').notNullable()
       table.string('location').notNullable()
+      table.integer('price').defaultTo(0)
+      table.integer('max_teams').defaultTo(20)
+      table.integer('team_registered').defaultTo(0)
       table.enu('status', ['upcoming', 'ongoing', 'completed']).defaultTo('upcoming')
       table
         .enu('difficulty', ['P25', 'P100', 'P250', 'P500', 'P1000', 'P2000', 'any'])

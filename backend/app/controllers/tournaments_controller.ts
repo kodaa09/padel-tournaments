@@ -27,6 +27,9 @@ export default class TournamentsController {
       'status',
       'difficulty',
       'category',
+      'price',
+      'maxTeams',
+      'teamRegistered',
     ])
 
     const tournament = await Tournament.create(tournamentData)
@@ -69,6 +72,9 @@ export default class TournamentsController {
       'status',
       'difficulty',
       'category',
+      'price',
+      'maxTeams',
+      'teamRegistered',
     ])
 
     await tournament.merge(tournamentData).save()

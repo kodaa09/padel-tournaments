@@ -17,6 +17,8 @@ const isLoading = ref(false);
 const state = reactive({
   name: "",
   location: "",
+  price: 0,
+  maxTeams: 20,
   startDate: new Date(),
   endDate: new Date(),
   status: useTournament().statusOptions[0].value,
@@ -30,6 +32,8 @@ onUpdated(async () => {
     if (response) {
       state.name = response.data.name;
       state.location = response.data.location;
+      state.price = response.data.price;
+      state.maxTeams = response.data.maxTeams;
       state.startDate = new Date(response.data.startDate);
       state.endDate = new Date(response.data.endDate);
       state.status = response.data.status;
@@ -94,6 +98,14 @@ const onSubmit = async (event: FormSubmitEvent<CreateTournamentSchema>) => {
 
           <UFormGroup label="Localisation du tournoi" name="location" required>
             <UInput v-model="state.location" />
+          </UFormGroup>
+
+          <UFormGroup label="Prix" name="price" required>
+            <UInput v-model="state.price" type="number" />
+          </UFormGroup>
+
+          <UFormGroup label="Nombres d'équipes max" name="maxTeams" required>
+            <UInput v-model="state.maxTeams" type="number" />
           </UFormGroup>
 
           <div class="flex gap-4">
