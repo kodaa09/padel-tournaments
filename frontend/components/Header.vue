@@ -5,8 +5,8 @@ const authStore = useAuthStore();
 </script>
 
 <template>
-  <header class="py-8">
-    <div class="flex justify-between items-center">
+  <header class="mb-16">
+    <div class="flex justify-between items-center container mx-auto py-8">
       <div>
         <h1 class="text-2xl font-bold">
           <NuxtLink to="/">Padel Tournaments</NuxtLink>
@@ -21,7 +21,25 @@ const authStore = useAuthStore();
             <LoginForm />
           </li>
         </ul>
-        <ul class="flex items-center gap-4" v-else>
+        <ul class="flex items-center gap-8" v-else>
+          <li v-if="authStore.user?.role === 'admin'">
+            <ULink
+              to="/admin/tournaments"
+              active-class="text-primary"
+              inactive-class="text-black"
+            >
+              Tournois
+            </ULink>
+          </li>
+          <li v-if="authStore.user?.role === 'admin'">
+            <ULink
+              to="/admin/users"
+              active-class="text-primary"
+              inactive-class="text-black"
+            >
+              Utilisateurs
+            </ULink>
+          </li>
           <li>
             <ULink
               to="/me"
@@ -32,12 +50,11 @@ const authStore = useAuthStore();
             </ULink>
           </li>
           <li>
-            <UButton color="black" @click="authStore.logout"
-              >Déconnexion</UButton
-            >
+            <UButton @click="authStore.logout">Déconnexion</UButton>
           </li>
         </ul>
       </nav>
     </div>
+    <UDivider />
   </header>
 </template>

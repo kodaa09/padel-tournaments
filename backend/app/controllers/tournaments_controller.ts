@@ -6,7 +6,7 @@ export default class TournamentsController {
    * Récupère la liste des tournois
    */
   async index({ response }: HttpContext) {
-    const tournaments = await Tournament.query().preload('teams').preload('matchs')
+    const tournaments = await Tournament.query()
 
     return response.status(200).json({
       status: 'success',

@@ -12,9 +12,9 @@ export default class extends BaseSchema {
       table.string('location').notNullable()
       table.enu('status', ['upcoming', 'ongoing', 'completed']).defaultTo('upcoming')
       table
-        .enu('diffciulty', ['P25', 'P100', 'P250', 'P500', 'P1000', 'P2000', 'any'])
+        .enu('difficulty', ['P25', 'P100', 'P250', 'P500', 'P1000', 'P2000', 'any'])
         .defaultTo('any')
-      table.enu('categorie', ['men', 'women', 'mixte']).defaultTo('any')
+      table.enu('category', ['men', 'women', 'mixte']).defaultTo('any')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
