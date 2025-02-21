@@ -28,7 +28,6 @@ const loadTournaments = async () => {
     if (response) {
       tournaments.value = response.data;
     }
-    console.log(tournaments.value);
   } catch (error) {
     console.error(error);
   } finally {
