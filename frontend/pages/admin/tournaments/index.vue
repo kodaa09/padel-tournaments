@@ -5,12 +5,12 @@ import { fr } from "date-fns/locale";
 const tournaments = ref<Tournament[] | null>(null);
 const isLoading = ref(true);
 
-onMounted(async () => {
-  await loadTournaments();
+onMounted(() => {
+  loadTournaments();
 });
 
-const onloadTournaments = async () => {
-  await loadTournaments();
+const onloadTournaments = () => {
+  loadTournaments();
 };
 
 const onDeleteTournament = async (id: string) => {
