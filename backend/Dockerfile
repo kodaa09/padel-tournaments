@@ -18,4 +18,4 @@ COPY .env .env
 EXPOSE 3333
 
 # Ajout de la commande de migration avant le démarrage du serveur
-CMD node ace migration:refresh && node ./bin/server.js
+CMD node ace migration:fresh && node ./bin/server.js
