@@ -2,11 +2,12 @@ import { defineStore } from "pinia";
 import type { LoginSchema } from "~/schemas/auth.schema";
 
 export const useAuthStore = defineStore("auth", () => {
+  const config = useRuntimeConfig();
   const user = useState("user", (): null | UserType => null);
 
   const authenticate = async (payload: LoginSchema) => {
     const { data, status, error } = await useFetch<{ data: UserType }>(
-      "http://localhost:3333/api/auth/login",
+      `${config.public.apiBase}/auth/login`,
       {
         method: "POST",
         body: payload,
@@ -31,7 +32,7 @@ export const useAuthStore = defineStore("auth", () => {
   const me = async () => {
     const headers = useRequestHeaders(["cookie"]);
     const { data, status } = await useFetch<{ data: UserType }>(
-      "http://localhost:3333/api/auth/me",
+      `${config.public.apiBase}/auth/me`,
       {
         credentials: "include",
         headers,
@@ -53,7 +54,7 @@ export const useAuthStore = defineStore("auth", () => {
   };
 
   const logout = async () => {
-    const { status } = await useFetch("http://localhost:3333/api/auth/logout", {
+    const { status } = await useFetch(`${config.public.apiBase}/auth/logout`, {
       method: "POST",
       credentials: "include",
     });

@@ -8,7 +8,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: "http://localhost:3333/api",
+      // apiBase: "http://localhost:3333/api",
+      apiBase: "http://preprod-padel.koodev.fr/api",
     },
   },
 });
