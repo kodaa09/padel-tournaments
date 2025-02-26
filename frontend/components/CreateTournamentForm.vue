@@ -16,11 +16,14 @@ const state = reactive({
   location: "",
   price: 0,
   maxTeams: 20,
+  seed: false,
+  consolation: false,
   startDate: new Date(),
   endDate: new Date(),
   status: useTournament().statusOptions[0].value,
   difficulty: useTournament().difficultyOptions[0].value,
   category: useTournament().categoryOptions[0].value,
+  type: useTournament().typeOptions[0].value,
 });
 
 const onSubmit = async (event: FormSubmitEvent<CreateTournamentSchema>) => {
@@ -50,6 +53,9 @@ const resetForm = () => {
   state.maxTeams = 20;
   state.startDate = new Date();
   state.endDate = new Date();
+  state.seed = false;
+  state.consolation = false;
+  state.type = useTournament().typeOptions[0].value;
 };
 </script>
 
@@ -85,13 +91,43 @@ const resetForm = () => {
             <UInput v-model="state.location" />
           </UFormGroup>
 
-          <UFormGroup label="Prix" name="price" required>
-            <UInput v-model="state.price" type="number" />
+          <div class="flex gap-4">
+            <UFormGroup class="w-6/12" label="Prix" name="price" required>
+              <UInput v-model="state.price" type="number" />
+            </UFormGroup>
+
+            <UFormGroup
+              class="w-6/12"
+              label="Nombres d'équipes max"
+              name="maxTeams"
+              required
+            >
+              <UInput v-model="state.maxTeams" type="number" />
+            </UFormGroup>
+          </div>
+
+          <UFormGroup label="Type de tournois" name="status" required>
+            <USelectMenu
+              v-model="state.type"
+              :options="useTournament().typeOptions"
+              option-attribute="name"
+              value-attribute="value"
+            />
           </UFormGroup>
 
-          <UFormGroup label="Nombres d'équipes max" name="maxTeams" required>
-            <UInput v-model="state.maxTeams" type="number" />
-          </UFormGroup>
+          <div class="flex gap-4 items-center">
+            <UFormGroup class="w-6/12" label="Tête de série" name="status">
+              <UToggle color="primary" v-model="state.seed" />
+            </UFormGroup>
+            <UFormGroup
+              class="w-6/12"
+              label="Consolante"
+              name="consolation"
+              v-if="state.type === 'bracket'"
+            >
+              <UToggle color="primary" v-model="state.consolation" />
+            </UFormGroup>
+          </div>
 
           <div class="flex gap-4">
             <UFormGroup

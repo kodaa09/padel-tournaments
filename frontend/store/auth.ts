@@ -16,6 +16,7 @@ export const useAuthStore = defineStore("auth", () => {
 
     if (status.value === "success" && data.value) {
       user.value = {
+        id: data.value.data.id ?? null,
         licenseNumber: data.value.data.licenseNumber ?? null,
         firstname: data.value.data.firstname ?? null,
         lastname: data.value.data.lastname ?? null,
@@ -39,6 +40,7 @@ export const useAuthStore = defineStore("auth", () => {
 
     if (status.value === "success" && data.value?.data) {
       user.value = {
+        id: data.value.data.id ?? null,
         licenseNumber: data.value.data.licenseNumber ?? null,
         firstname: data.value.data.firstname ?? null,
         lastname: data.value.data.lastname ?? null,
@@ -66,6 +68,7 @@ export const useAuthStore = defineStore("auth", () => {
 });
 
 export type UserType = {
+  id: string | null;
   licenseNumber: string | null;
   firstname: string | null;
   lastname: string | null;

@@ -6,7 +6,7 @@ export default class TournamentsController {
    * Récupère la liste des tournois
    */
   async index({ response }: HttpContext) {
-    const tournaments = await Tournament.query()
+    const tournaments = await Tournament.query().preload('teams')
 
     return response.status(200).json({
       status: 'success',
@@ -30,6 +30,9 @@ export default class TournamentsController {
       'price',
       'maxTeams',
       'teamRegistered',
+      'type',
+      'consolation',
+      'seed',
     ])
 
     const tournament = await Tournament.create(tournamentData)
@@ -75,6 +78,9 @@ export default class TournamentsController {
       'price',
       'maxTeams',
       'teamRegistered',
+      'type',
+      'consolation',
+      'seed',
     ])
 
     await tournament.merge(tournamentData).save()

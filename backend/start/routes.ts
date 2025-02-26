@@ -13,6 +13,10 @@ router
     router.get('/auth/me', [UsersController, 'me']).use(middleware.auth())
     router.get('/auth/check', [UsersController, 'check']).use(middleware.auth())
 
+    router
+      .get('/users/license-number/:licenseNumber', [UsersController, 'showByLicenseNumber'])
+      .use(middleware.auth())
+
     router.get('/tournaments', [TournamentsController, 'index'])
     router.post('/tournaments', [TournamentsController, 'store']).use(middleware.admin())
     router.get('/tournaments/:id', [TournamentsController, 'show'])
@@ -20,7 +24,7 @@ router
     router.delete('/tournaments/:id', [TournamentsController, 'destroy']).use(middleware.admin())
 
     router.get('/teams', [TeamsController, 'index'])
-    router.post('/teams', [TeamsController, 'store']).use(middleware.admin())
+    router.post('/teams', [TeamsController, 'store']).use(middleware.auth())
     router.get('/teams/:id', [TeamsController, 'show'])
     router.put('/teams/:id', [TeamsController, 'update']).use(middleware.admin())
     router.delete('/teams/:id', [TeamsController, 'destroy']).use(middleware.admin())

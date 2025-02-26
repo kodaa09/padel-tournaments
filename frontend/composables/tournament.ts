@@ -2,6 +2,8 @@ import type {
   CreateTournamentSchema,
   UpdateTournamentSchema,
 } from "~/schemas/tournament.schema.js";
+import { format, parseISO } from "date-fns";
+import { fr } from "date-fns/locale";
 
 export function useTournament() {
   const config = useRuntimeConfig();
@@ -62,6 +64,16 @@ export function useTournament() {
     {
       name: "Mixte",
       value: "mixte",
+    },
+  ];
+  const typeOptions = [
+    {
+      name: "Bracket",
+      value: "bracket",
+    },
+    {
+      name: "Poule",
+      value: "round-robin",
     },
   ];
 
@@ -154,10 +166,16 @@ export function useTournament() {
     );
   }
 
+  function formatDate(dateString: string) {
+    const date = parseISO(dateString);
+    return format(date, "EEEE d MMMM HH'h'", { locale: fr });
+  }
+
   return {
     statusOptions,
     difficultyOptions,
     categoryOptions,
+    typeOptions,
     index,
     store,
     show,
@@ -166,6 +184,7 @@ export function useTournament() {
     formatStatus,
     formatCategory,
     formatDifficulty,
+    formatDate,
   };
 }
 
@@ -193,4 +212,7 @@ export type Tournament = {
   status: string;
   difficulty: string;
   category: string;
+  type: string;
+  seed: boolean;
+  consolation: boolean;
 };

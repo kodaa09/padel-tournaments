@@ -23,10 +23,10 @@ export default class Team extends BaseModel {
   @column()
   declare tournamentId: string
 
-  @column()
+  @column({ columnName: 'player1_id' })
   declare player1Id: string
 
-  @column()
+  @column({ columnName: 'player2_id' })
   declare player2Id: string
 
   @belongsTo(() => Tournament)
@@ -56,11 +56,6 @@ export default class Team extends BaseModel {
     foreignKey: 'winnerId',
   })
   declare matchesAsWinner: HasMany<typeof Match>
-
-  @manyToMany(() => User, {
-    pivotTable: 'user_teams',
-  })
-  declare players: ManyToMany<typeof User>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

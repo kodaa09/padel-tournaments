@@ -19,6 +19,9 @@ const state = reactive({
   location: "",
   price: 0,
   maxTeams: 20,
+  type: useTournament().typeOptions[0].value,
+  seed: false,
+  consolation: false,
   startDate: new Date(),
   endDate: new Date(),
   status: useTournament().statusOptions[0].value,
@@ -34,6 +37,9 @@ onUpdated(async () => {
       state.location = response.data.location;
       state.price = response.data.price;
       state.maxTeams = response.data.maxTeams;
+      state.type = response.data.type;
+      state.seed = response.data.seed;
+      state.consolation = response.data.consolation;
       state.startDate = new Date(response.data.startDate);
       state.endDate = new Date(response.data.endDate);
       state.status = response.data.status;
@@ -107,6 +113,29 @@ const onSubmit = async (event: FormSubmitEvent<CreateTournamentSchema>) => {
           <UFormGroup label="Nombres d'équipes max" name="maxTeams" required>
             <UInput v-model="state.maxTeams" type="number" />
           </UFormGroup>
+
+          <UFormGroup label="Type de tournois" name="status" required>
+            <USelectMenu
+              v-model="state.type"
+              :options="useTournament().typeOptions"
+              option-attribute="name"
+              value-attribute="value"
+            />
+          </UFormGroup>
+
+          <div class="flex gap-4 items-center">
+            <UFormGroup class="w-6/12" label="Tête de série" name="status">
+              <UToggle color="primary" v-model="state.seed" />
+            </UFormGroup>
+            <UFormGroup
+              class="w-6/12"
+              label="Consolante"
+              name="consolation"
+              v-if="state.type === 'bracket'"
+            >
+              <UToggle color="primary" v-model="state.consolation" />
+            </UFormGroup>
+          </div>
 
           <div class="flex gap-4">
             <UFormGroup

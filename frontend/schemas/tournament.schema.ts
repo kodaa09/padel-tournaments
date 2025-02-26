@@ -5,6 +5,9 @@ export const createTournamentSchema = z.object({
   location: z.string().min(1),
   price: z.number().min(0),
   maxTeams: z.number().min(1),
+  type: z.enum(["bracket", "round-robin"]),
+  seed: z.boolean(),
+  consolation: z.boolean(),
   startDate: z.date(),
   endDate: z.date(),
   status: z.enum(["upcoming", "ongoing", "completed"]),
@@ -12,7 +15,16 @@ export const createTournamentSchema = z.object({
   category: z.enum(["men", "women", "mixte"]),
 });
 
+export const registerTournamentSchema = z.object({
+  firstname: z.string().min(1),
+  lastname: z.string().min(1),
+  email: z.string().email(),
+  phone: z.string().min(1),
+  licenseNumber: z.string().min(1),
+});
+
 export const updateTournamentSchema = createTournamentSchema.partial();
 
 export type CreateTournamentSchema = z.infer<typeof createTournamentSchema>;
 export type UpdateTournamentSchema = z.infer<typeof updateTournamentSchema>;
+export type RegisterTournamentSchema = z.infer<typeof registerTournamentSchema>;

@@ -54,6 +54,24 @@ export default class UsersController {
   }
 
   /**
+   * Récupère un utilisateur spécifique par son numéro de licence
+   */
+  async showByLicenseNumber({ params, response }: HttpContext) {
+    const user = await User.query().where('license_number', params.licenseNumber).firstOrFail()
+
+    return response.status(200).json({
+      status: 'success',
+      message: 'Utilisateur récupéré avec succès',
+      data: {
+        id: user.id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        licenseNumber: user.licenseNumber,
+      },
+    })
+  }
+  /**
    * Inscription d'un nouvel utilisateur
    */
   async signup({ request, response }: HttpContext) {

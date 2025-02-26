@@ -1,6 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Team from '#models/team'
-import { createTeamValidator, updateTeamValidator } from '#validators/team_validators'
 
 export default class TeamsController {
   /**
@@ -9,7 +8,6 @@ export default class TeamsController {
   async index({ response }: HttpContext) {
     const teams = await Team.query()
       .preload('tournament')
-      .preload('players')
       .preload('player1')
       .preload('player2')
       .preload('matchesAsTeam1')
@@ -30,7 +28,6 @@ export default class TeamsController {
     const team = await Team.query()
       .where('id', params.id)
       .preload('tournament')
-      .preload('players')
       .preload('player1')
       .preload('player2')
       .preload('matchesAsTeam1')
@@ -49,25 +46,17 @@ export default class TeamsController {
    * Crée une nouvelle équipe
    */
   async store({ request, response }: HttpContext) {
-    const payload = await request.validateUsing(createTeamValidator)
-    const team = await Team.create({
-      name: payload.name,
-      tournamentId: payload.tournament_id,
-      player1Id: payload.playerIds[0],
-      player2Id: payload.playerIds[1],
-    })
+    const payload = request.only(['name', 'tournamentId', 'player1Id', 'player2Id'])
+    const team = await Team.create(payload)
 
-    if (payload.playerIds) {
-      await team.related('players').attach(payload.playerIds)
-    }
-
-    await team.load('players')
-    await team.load('tournament')
-    await team.load('player1')
-    await team.load('player2')
-    await team.load('matchesAsTeam1')
-    await team.load('matchesAsTeam2')
-    await team.load('matchesAsWinner')
+    await Promise.all([
+      team.load('tournament'),
+      team.load('player1'),
+      team.load('player2'),
+      team.load('matchesAsTeam1'),
+      team.load('matchesAsTeam2'),
+      team.load('matchesAsWinner'),
+    ])
 
     return response.status(201).json({
       status: 'success',
@@ -81,24 +70,15 @@ export default class TeamsController {
    */
   async update({ params, request, response }: HttpContext) {
     const team = await Team.findOrFail(params.id)
-    const payload = await request.validateUsing(updateTeamValidator)
+    const payload = request.only(['name', 'tournamentId', 'player1Id', 'player2Id'])
 
     const updateData: any = { name: payload.name }
-    if (payload.tournament_id) {
-      updateData.tournamentId = payload.tournament_id
-    }
-    if (payload.playerIds) {
-      updateData.player1Id = payload.playerIds[0]
-      updateData.player2Id = payload.playerIds[1]
+    if (payload.tournamentId) {
+      updateData.tournamentId = payload.tournamentId
     }
 
     await team.merge(updateData).save()
 
-    if (payload.playerIds) {
-      await team.related('players').sync(payload.playerIds)
-    }
-
-    await team.load('players')
     await team.load('tournament')
     await team.load('player1')
     await team.load('player2')

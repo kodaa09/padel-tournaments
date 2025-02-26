@@ -34,6 +34,15 @@ export default class Tournament extends BaseModel {
   declare price: number
 
   @column()
+  declare type: string
+
+  @column()
+  declare consolation: boolean
+
+  @column()
+  declare seed: boolean
+
+  @column()
   declare maxTeams: number
 
   @column()

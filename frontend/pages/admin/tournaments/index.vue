@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { format, parseISO } from "date-fns";
-import { fr } from "date-fns/locale";
-
 const tournaments = ref<Tournament[] | null>(null);
 const isLoading = ref(true);
 
@@ -35,11 +32,6 @@ const loadTournaments = async () => {
   }
 };
 
-const formatDate = (dateString: string) => {
-  const date = parseISO(dateString);
-  return format(date, "EEEE d MMMM HH'h'", { locale: fr });
-};
-
 definePageMeta({
   middleware: "admin",
 });
@@ -67,8 +59,8 @@ definePageMeta({
                 {{ tournament.name }}
               </h2>
               <p>
-                {{ formatDate(tournament.startDate) }} -
-                {{ formatDate(tournament.endDate) }}
+                {{ useTournament().formatDate(tournament.startDate) }} -
+                {{ useTournament().formatDate(tournament.endDate) }}
               </p>
             </div>
             <div class="flex justify-between items-center">

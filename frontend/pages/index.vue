@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { format, parseISO } from "date-fns";
-import { fr } from "date-fns/locale";
+import ErrorRegisterModal from "~/components/ErrorRegisterModal.vue";
+
 const tournaments = ref<Tournament[] | null>(null);
+const modal = useModal();
 
 onMounted(async () => {
   const response = await useTournament().index();
@@ -10,9 +11,8 @@ onMounted(async () => {
   }
 });
 
-const formatDate = (dateString: string) => {
-  const date = parseISO(dateString);
-  return format(date, "EEEE d MMMM HH'h'", { locale: fr });
+const registerError = () => {
+  modal.open(ErrorRegisterModal);
 };
 </script>
 
@@ -31,8 +31,8 @@ const formatDate = (dateString: string) => {
               {{ tournament.name }}
             </h2>
             <p>
-              {{ formatDate(tournament.startDate) }} -
-              {{ formatDate(tournament.endDate) }}
+              {{ useTournament().formatDate(tournament.startDate) }} -
+              {{ useTournament().formatDate(tournament.endDate) }}
             </p>
           </div>
           <div class="flex justify-between items-center">
@@ -54,8 +54,11 @@ const formatDate = (dateString: string) => {
                 {{ useTournament().formatCategory(tournament.category) }}
               </p>
             </div>
-            <div class="flex flex-col gap-2">
-              <UButton size="lg"> S'inscrire </UButton>
+            <div>
+              <RegisterTournament
+                :tournament-id="tournament.id"
+                @register-error="registerError"
+              />
             </div>
           </div>
         </div>

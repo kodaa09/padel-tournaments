@@ -71,7 +71,9 @@ async function onSubmit(event: FormSubmitEvent<LoginSchema>) {
 
           <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
 
-          <UButton type="submit" :loading="isLoading"> Se connecter </UButton>
+          <UButton class="!mt-6" type="submit" :loading="isLoading">
+            Se connecter
+          </UButton>
         </UForm>
       </UCard>
     </UModal>

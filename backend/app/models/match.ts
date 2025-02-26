@@ -21,10 +21,10 @@ export default class Match extends BaseModel {
   @column()
   declare status: string
 
-  @column()
+  @column({ columnName: 'team1_id' })
   declare team1Id: string
 
-  @column()
+  @column({ columnName: 'team2_id' })
   declare team2Id: string
 
   @column()
