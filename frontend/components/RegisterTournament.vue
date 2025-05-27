@@ -63,12 +63,12 @@ const onRegisterTournament = async () => {
     tournamentId: props.tournamentId,
     name: teamName.value,
   });
-  console.log(team);
+  onCloseModal();
   isRegisterLoading.value = false;
 };
 
 const teamName = computed(() => {
-  return `Team ${authStore.user?.lastname} - ${teammate.value?.lastname}`;
+  return `Team: ${authStore.user?.lastname} - ${teammate.value?.lastname}`;
 });
 
 const onCloseModal = () => {
@@ -162,7 +162,7 @@ const onCloseModal = () => {
             </div>
           </UCard>
           <div v-if="isMakeTeam">
-            <h3 class="text-lg font-semibold mb-2">Team : {{ teamName }}</h3>
+            <h3 class="text-lg font-semibold mb-2">{{ teamName }}</h3>
             <div class="flex items-center gap-4">
               <UCard class="w-6/12">
                 <div>

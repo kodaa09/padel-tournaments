@@ -6,13 +6,7 @@ export default class TeamsController {
    * Récupère toutes les équipes
    */
   async index({ response }: HttpContext) {
-    const teams = await Team.query()
-      .preload('tournament')
-      .preload('player1')
-      .preload('player2')
-      .preload('matchesAsTeam1')
-      .preload('matchesAsTeam2')
-      .preload('matchesAsWinner')
+    const teams = await Team.query().preload('tournament').preload('player1').preload('player2')
 
     return response.status(200).json({
       status: 'success',
@@ -30,9 +24,6 @@ export default class TeamsController {
       .preload('tournament')
       .preload('player1')
       .preload('player2')
-      .preload('matchesAsTeam1')
-      .preload('matchesAsTeam2')
-      .preload('matchesAsWinner')
       .firstOrFail()
 
     return response.status(200).json({
@@ -49,14 +40,7 @@ export default class TeamsController {
     const payload = request.only(['name', 'tournamentId', 'player1Id', 'player2Id'])
     const team = await Team.create(payload)
 
-    await Promise.all([
-      team.load('tournament'),
-      team.load('player1'),
-      team.load('player2'),
-      team.load('matchesAsTeam1'),
-      team.load('matchesAsTeam2'),
-      team.load('matchesAsWinner'),
-    ])
+    await Promise.all([team.load('tournament'), team.load('player1'), team.load('player2')])
 
     return response.status(201).json({
       status: 'success',
@@ -82,9 +66,6 @@ export default class TeamsController {
     await team.load('tournament')
     await team.load('player1')
     await team.load('player2')
-    await team.load('matchesAsTeam1')
-    await team.load('matchesAsTeam2')
-    await team.load('matchesAsWinner')
 
     return response.status(200).json({
       status: 'success',

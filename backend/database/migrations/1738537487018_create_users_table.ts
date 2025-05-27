@@ -6,9 +6,6 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.uuid('id').primary()
-      table.string('license_number').notNullable().unique()
-      table.string('firstname').notNullable()
-      table.string('lastname').notNullable()
       table.string('email', 254).notNullable().unique()
       table.string('password').notNullable()
       table.enum('role', ['admin', 'user']).defaultTo('user')

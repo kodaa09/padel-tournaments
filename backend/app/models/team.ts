@@ -1,16 +1,8 @@
 import { DateTime } from 'luxon'
-import {
-  BaseModel,
-  beforeCreate,
-  belongsTo,
-  column,
-  hasMany,
-  manyToMany,
-} from '@adonisjs/lucid/orm'
+import { BaseModel, beforeCreate, belongsTo, column } from '@adonisjs/lucid/orm'
 import Tournament from './tournament.js'
-import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import User from './user.js'
-import Match from './match.js'
 import { randomUUID } from 'node:crypto'
 
 export default class Team extends BaseModel {
@@ -41,21 +33,6 @@ export default class Team extends BaseModel {
     foreignKey: 'player2Id',
   })
   declare player2: BelongsTo<typeof User>
-
-  @hasMany(() => Match, {
-    foreignKey: 'team1Id',
-  })
-  declare matchesAsTeam1: HasMany<typeof Match>
-
-  @hasMany(() => Match, {
-    foreignKey: 'team2Id',
-  })
-  declare matchesAsTeam2: HasMany<typeof Match>
-
-  @hasMany(() => Match, {
-    foreignKey: 'winnerId',
-  })
-  declare matchesAsWinner: HasMany<typeof Match>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

@@ -8,9 +8,6 @@ export default class UsersController {
    */
   static signupValidator = vine.compile(
     vine.object({
-      licenseNumber: vine.string().trim(),
-      firstname: vine.string().trim(),
-      lastname: vine.string().trim(),
       email: vine.string().email(),
       password: vine.string().minLength(4),
       role: vine.enum(['user', 'admin']).optional(),
@@ -56,21 +53,22 @@ export default class UsersController {
   /**
    * Récupère un utilisateur spécifique par son numéro de licence
    */
-  async showByLicenseNumber({ params, response }: HttpContext) {
-    const user = await User.query().where('license_number', params.licenseNumber).firstOrFail()
+  // async showByLicenseNumber({ params, response }: HttpContext) {
+  //   const user = await User.query().where('license_number', params.licenseNumber).firstOrFail()
 
-    return response.status(200).json({
-      status: 'success',
-      message: 'Utilisateur récupéré avec succès',
-      data: {
-        id: user.id,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        licenseNumber: user.licenseNumber,
-      },
-    })
-  }
+  //   return response.status(200).json({
+  //     status: 'success',
+  //     message: 'Utilisateur récupéré avec succès',
+  //     data: {
+  //       id: user.id,
+  //       firstname: user.firstname,
+  //       lastname: user.lastname,
+  //       email: user.email,
+  //       licenseNumber: user.licenseNumber,
+  //     },
+  //   })
+  // }
+
   /**
    * Inscription d'un nouvel utilisateur
    */
@@ -87,13 +85,13 @@ export default class UsersController {
     }
 
     // Verifie si le numero de licence est unique
-    const existingLicenseNumber = await User.findBy('license_number', payload.licenseNumber)
-    if (existingLicenseNumber) {
-      return response.status(400).json({
-        status: 'error',
-        message: 'Ce numéro de licence est déjà utilisé',
-      })
-    }
+    // const existingLicenseNumber = await User.findBy('license_number', payload.licenseNumber)
+    // if (existingLicenseNumber) {
+    //   return response.status(400).json({
+    //     status: 'error',
+    //     message: 'Ce numéro de licence est déjà utilisé',
+    //   })
+    // }
     const user = await User.create(payload)
 
     return response.status(201).json({

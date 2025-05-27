@@ -51,7 +51,6 @@ export default class TournamentsController {
     const tournament = await Tournament.query()
       .where('id', params.id)
       .preload('teams')
-      .preload('matchs')
       .firstOrFail()
 
     return response.status(200).json({
@@ -86,7 +85,6 @@ export default class TournamentsController {
     await tournament.merge(tournamentData).save()
 
     await tournament.load('teams')
-    await tournament.load('matchs')
 
     return response.status(200).json({
       status: 'success',
