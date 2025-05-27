@@ -9,6 +9,8 @@ export default class UsersController {
   static signupValidator = vine.compile(
     vine.object({
       email: vine.string().email(),
+      firstname: vine.string().trim().minLength(3),
+      lastname: vine.string().trim().minLength(3),
       password: vine.string().minLength(4),
       role: vine.enum(['user', 'admin']).optional(),
     })
